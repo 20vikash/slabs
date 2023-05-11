@@ -1,0 +1,98 @@
+#! /usr/bin/python3
+
+import sys
+import subprocess
+
+upDown = False
+
+def stopConnection():
+	global upDown
+	subprocess.run(["sudo", "wg-quick", "down", 
+"/etc/wireguard/snawg0.conf"])
+	upDown = True
+
+def startConnection():
+	global upDown
+	subprocess.run(["sudo", "wg-quick", "up", 
+"/etc/wireguard/snawg0.conf"])
+	upDown = True
+
+def status():
+	global upDown
+	subprocess.run(["sudo", "wg"])
+	upDown = True
+
+try:
+	if sys.argv[1] == "up":
+        	startConnection()
+	elif sys.argv[1] == "down":
+        	stopConnection()
+	elif sys.argv[1] == "status":
+		status()
+except:
+	pass
+
+if upDown:
+	sys.exit()
+
+print("Working on wireguard.........")
+result = subprocess.run(["sudo", "apt", "update"], stdout=subprocess.PIPE)
+result = subprocess.run(["sudo", "apt", "install", "wireguard-tools"], 
+stdout=subprocess.PIPE)
+
+fresh = False
+
+try:
+	subprocess.run(["sudo", "wg-quick", "down", "snawg0"])
+except:
+	pass
+
+try:
+	f = open("/etc/wireguard/snaprkey", "r")
+except:
+	fresh = True
+
+if fresh:
+	result = subprocess.run(["wg", "genkey"], stdout=subprocess.PIPE)
+
+	with open("/etc/wireguard/snaprkey", "w") as f:
+		f.write(result.stdout.decode("utf8"))
+
+	with open("/etc/wireguard/snaprkey", "r") as f:
+		private_key = f.read().strip()
+
+	result = subprocess.run(['wg', 'pubkey'], 
+input=private_key.encode('utf-8'), stdout=subprocess.PIPE)
+	public_key = result.stdout.decode("utf8")
+
+	with open("/etc/wireguard/snapubkey", "w") as f:
+		f.write(public_key)
+
+	print("Kindly add a new device and add this public key to it")
+	print(public_key)
+
+	check = input("Have you added the key to the device? Y/N: ")
+
+	while check.lower() != "y":
+		check = input("Have you added the key to the device? Y/N: 
+")
+
+	with open("/etc/wireguard/snawg0.conf", "w") as f:
+		f.write("# Please add the configuration code of your 
+device here")
+
+subprocess.run(["sudo", "nano", "/etc/wireguard/snawg0.conf"])
+
+with open("/etc/wireguard/snawg0.conf", "r") as f:
+	confCode = f.read()
+
+with open("/etc/wireguard/snaprkey", "r") as f:
+	prkey = f.read().strip()
+
+confCode = confCode.replace("{private_key}", "{}".format(prkey))
+
+with open("/etc/wireguard/snawg0.conf", "w") as f:
+	f.write(confCode)
+
+subprocess.run(["sudo", "wg-quick", "up", "/etc/wireguard/snawg0.conf"])
+
