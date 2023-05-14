@@ -1,0 +1,2 @@
+animation==0.0.2
+urllib3==1.26.6
