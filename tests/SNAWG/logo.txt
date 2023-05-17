@@ -1,0 +1,12 @@
+█▀ █▄░█ ▄▀█   █░█░█ █▀▀   █▀▀ █▀█ █▄░█ █▄░█ █▀▀ █▀▀ ▀█▀ █▀█ █▀█
+▄█ █░▀█ █▀█   ▀▄▀▄▀ █▄█   █▄▄ █▄█ █░▀█ █░▀█ ██▄ █▄▄ ░█░ █▄█ █▀▄
+
+[*] SNA WireGuard Connector For Linux Distros + macOS
+[*] For windows users watch this -> " https://www.youtube.com/watch?v=DWqYwM-CTQc "
+[*] Version 1.0.0
+[*] Author: 20vikas , Prasaanth
+[*] Description: This tool connects your devices to our SNA labs.
+[*] Main GITHUB Page : https://github.com/20vikash/slabs 
+[*] Upto 5 devices you can able to connect 
+[*] Lab abusing is strictly prohibited 
+[*] Contact our support team  " @selfmadeninjasupport "

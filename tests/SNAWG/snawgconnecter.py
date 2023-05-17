@@ -92,31 +92,19 @@ elif wireguard_status.lower() == 'n':
             print("Please check your internet connection.")
         try:
             a.loading_animation("Installing Wireguard")
-            command = ['sudo', 'apt-get', 'install', 'wireguard', '-y']
-            wgst = subprocess.run(command, capture_output=True, text=True, check=True)
-            
-            if "is already the newest version" in wgst.stdout:
+            wgst = subprocess.check_output(
+                ['sudo', 'apt-get', 'install', 'wireguard', '-y'], input=b'yes\n', stderr=subprocess.STDOUT)
+            wgst_str = wgst.decode("utf-8")
+            if "is already the newest version" in wgst_str:
                 print("Wireguard is already installed.")
             else:
                 print("Wireguard installed.")
-
         except subprocess.CalledProcessError as e:
-            print("Error occurred with apt-get, trying apt instead...")
-            
-            try:
-                command = ['sudo', 'apt', 'install', 'wireguard', '-y']
-                wgst = subprocess.run(command, capture_output=True, text=True, check=True)
-
-                if "is already the newest version" in wgst.stdout:
-                    print("Wireguard is already installed.")
-                else:
-                    print("Wireguard installed.")
-                    
-            except subprocess.CalledProcessError as e:
-                print(f"Error: {e.stdout.strip()}")
-        a.private_key_gen()
-        a.public_key_gen()
-        a.sna_labs_connect()
-        a.conf_code_replace_up()
+            print(f"Error: {e.output.decode('utf-8').strip()}")
     else:
-        pass
+        a.private_key_gen()
+    a.public_key_gen()
+    a.sna_labs_connect()
+    a.conf_code_replace_up()
+else:
+    pass
